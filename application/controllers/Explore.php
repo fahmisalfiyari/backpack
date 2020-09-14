@@ -1,19 +1,24 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
-class Auth extends CI_Controller {
+class Explore extends CI_Controller {
 	public function __construct(){
 		parent::__construct();
+		$this->load->model('m_ticket');
 	}
 
+	public function index(){
+		$route = $this->m_ticket->loadAllRoute();
+		$data['route'] = $route;
 
-	public function login(){
+
 		$setting = array(
-			'title' 			=> 'My Bookings'
+			'title' 			=> 'Backpack | Explore '
 		);
 
-		$this->load->view('login');
-		// $this->display_page('mybookings', $setting);
+		$this->display_page('explore', $setting, $data);
 	}
+
+	public function schedule
 
 	//display
 	private function display_page($main_content, $setting=null, $data=null){

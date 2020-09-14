@@ -75,19 +75,19 @@
 
             <!-- Nav Item - Alerts -->
             <li class="nav-item mx-1">
-              <a class="nav-link" href="#">
+              <a class="nav-link" href="<?=base_url().'explore';?>">
                 <span class="text-gray-600">Explore</span>
               </a>
             </li>
 
             <li class="nav-item mx-1">
-              <a class="nav-link" href="#">
+              <a class="nav-link" href="<?=base_url().'mybookings';?>">
                 <span class="text-gray-600">My Bookings</span>
               </a>
             </li>
 
             <li class="nav-item mx-1">
-              <a class="nav-link" href="#">
+              <a class="nav-link" href="<?=base_url().'promo';?>">
                 <span class="text-gray-600">Promo Code</span>
               </a>
             </li>
