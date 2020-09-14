@@ -1,7 +1,7 @@
 # ----------------------------------------------------------------------
 # mod_php5.c                                          
 # ----------------------------------------------------------------------
-<IfModule mod_php5.c>
+
 	RewriteEngine on
 	RewriteCond %{HTTP:X-Forwarded-Proto} !https
 	#RewriteRule .* https://%{HTTP_HOST}%{REQUEST_URI} [R,L]
@@ -25,7 +25,7 @@
 	
 	# remove server signature
 	ServerSignature Off
-</IfModule>
+
 
 # ----------------------------------------------------------------------
 # mod_mime.c                                          
