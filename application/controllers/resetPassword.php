@@ -1,14 +1,40 @@
+<?php
+    include "conn.php";
+	
+    $key  = @$_GET['key'];
+	$link	= "http://localhost/backpack/auth/resetPassword?key=".($key);
+	date_default_timezone_set("Asia/Bangkok");
+	$dateRegister = date("Ymd",time()).date("H:i:s");
+
+	$userCheck = "SELECT link, email FROM forgot_password WHERE link = '$link' AND flag='0'";
+	
+	$checkExist = mysqli_query($conn,$userCheck);
+	$data = mysqli_fetch_array($checkExist, MYSQLI_NUM);
+	if($data[0] == NULL) {
+		header('location:forgotPassword?status=unknown');
+		exit;
+	}
+	else {
+		$sql = "UPDATE forgot_password SET flag = '1' WHERE link = '$link' AND flag='0'";
+		if ($conn->query($sql) === TRUE) {
+		} 
+		else {
+			header('location:forgotPassword?status=unknown');
+		}  
+	}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
-<head>
 
+<head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="">
   <meta name="author" content="">
 
-  <title><?php echo isset($title)?$title:'Backpack Register';?></title>
+  <title><?php echo isset($title)?$title:'Backpack Reset Password';?></title>
 
   <!-- Custom fonts for this template-->
   <link href="<?=base_url().'assets/bootstrap/vendor';?>/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -16,7 +42,7 @@
 
   <!-- Custom styles for this template-->
   <link href="<?=base_url().'assets/bootstrap/css';?>/sb-admin-2.min.css" rel="stylesheet">
- 
+
 </head>
 
 <body class="bg-gradient-primary">
@@ -35,52 +61,33 @@
               <div class="col-lg-6 d-none d-lg-block bg-login-image"></div>
               <div class="col-lg-6">
                 <div class="p-5">
-                  <div class="text-center">
+				  <div class="text-center">
 					<?php 
 						if(@$_GET['status'] == 'failed'){ ?>
-							<h1 class="h4 text-gray-900 mb-4">Password Missmatch</h1>
+							<h1 class="h4 text-gray-900 mb-4">Failed!</h1>
 					<?php } 
-						else if(@$_GET['status'] == 'fail'){ ?>
-							<h1 class="h4 text-gray-900 mb-4">User already registered</h1>
-					<?php }
-						else if(@$_GET['status'] == 'failure'){ ?>
-							<h1 class="h4 text-gray-900 mb-4">Please tick the "Agreement" checkbox</h1>
-					<?php }
+						else if(@$_GET['status'] == 'success'){ ?>
+							<h1 class="h4 text-gray-900 mb-4">Success!</h1>
+					<?php } 
 						else { ?>                 
-							<h1 class="h4 text-gray-900 mb-4">Hello There!</h1>
+							<h1 class="h4 text-gray-900 mb-4">Insert your new Password</h1>
 					<?php } ?>
                   </div>
-                  <form method="post" action="actoRegister" class="user">
-					<div class="form-group">
-                      <input pattern="([A-z0-9À-ž\s]){2,}" type="text" class="form-control form-control-user" id="exampleInputFullName" name="inputFullName" aria-describedby="emailHelp" placeholder="Enter Your Name..">
-                    </div>
+                  <form class="user" method="post" action="actResetPassword">
                     <div class="form-group">
-                      <input type="email" class="form-control form-control-user" id="inputEmail" name="inputEmail" aria-describedby="emailHelp" placeholder="Enter Email Address...">
-                    </div>
-                    <div class="form-group">
-                      <input type="password" class="form-control form-control-user" id="exampleInputPassword" name="inputPassword" placeholder="Password">
+                      <input type="password" class="form-control form-control-user" id="exampleInputPassword" name="inputPassword" placeholder="New Password">
                     </div>
 					<div class="form-group">
-                      <input type="password" class="form-control form-control-user" id="exampleInputRetypePassword" name="inputRetypePassword" placeholder="Retype Password">
-                    </div>
-                    <div class="form-group">
-                      <div class="custom-control custom-checkbox small">
-                        <input type="checkbox" class="custom-control-input" id="customCheck" name="customCheck">
-                        <label class="custom-control-label" for="customCheck">Agree to Our <a href="https://www.google.com">Terms and Conditions</a></label>
-                      </div>
+                      <input type="password" class="form-control form-control-user" id="exampleInputRetypePassword" name="inputRetypePassword" placeholder="Retype New Password">
                     </div>
 					<input type="hidden" name="<?php echo $this->security->get_csrf_token_name();?>" value="<?php echo $this->security->get_csrf_hash();?>">
-                    <button class="btn btn-primary btn-user btn-block" type="submit" name="registerbtn" id="registerbtn">
-                      Sign Up!
+					<input type="hidden" name="inputEmail" value="<?php echo $data[1];?>">
+					<input type="hidden" name="inputHash" value="<?php echo $data[0];?>">
+                    <button class="btn btn-primary btn-user btn-block" type="submit">
+                      Reset Password
                     </button>
                   </form>
                   <hr>
-                  <div class="text-center">
-                    <a class="small" href="forgotPassword">Forgot Password?</a>
-                  </div>
-                  <div class="text-center">
-                    <a class="small" href="login">Have an Account?</a>
-                  </div>
                 </div>
               </div>
             </div>

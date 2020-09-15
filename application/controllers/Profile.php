@@ -1,22 +1,11 @@
-<?php
-defined('BASEPATH') OR exit('No direct script access allowed');
-class Profile extends CI_Controller {
-	public function __construct(){
-		parent::__construct();
-	}
+<!-- Begin Page Content -->
+<div class="container-fluid">
 
-	public function index(){
-		$setting = array(
-			'title' 			=> 'Backpack | My Profile'
-		);
+  <!-- Page Heading -->
+  <h1 class="h3 mb-4 text-gray-800">This is My Profile</h1>
 
-		$this->display_page('profile', $setting);
-	}
+</div>
+<!-- /.container-fluid -->
 
-	//display
-	private function display_page($main_content, $setting=null, $data=null){
-		$this->load->view("template/header", $setting);
-		$this->load->view($main_content,$data);
-		$this->load->view("template/footer");
-	}
-}
+</div>
+<!-- End of Main Content -->
