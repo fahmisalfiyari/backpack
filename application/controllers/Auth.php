@@ -101,6 +101,10 @@ class Auth extends CI_Controller {
 					} 
 				}
 			}
+			else {
+				header('location:register?status=failure');
+				exit;
+			}
 		}
 	}
 	
