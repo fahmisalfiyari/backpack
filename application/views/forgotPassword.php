@@ -9,7 +9,7 @@
   <meta name="description" content="">
   <meta name="author" content="">
 
-  <title><?php echo isset($title)?$title:'Backpack Login';?></title>
+  <title><?php echo isset($title)?$title:'Backpack Forgot Password';?></title>
 
   <!-- Custom fonts for this template-->
   <link href="<?=base_url().'assets/bootstrap/vendor';?>/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -38,42 +38,32 @@
                 <div class="p-5">
 				  <div class="text-center">
 					<?php 
-						if(@$_GET['status'] == 'forgotPassword'){ ?>
-							<h1 class="h4 text-gray-900 mb-4">Password Change Request Success!</h1>
+						if(@$_GET['status'] == 'failed'){ ?>
+							<h1 class="h4 text-gray-900 mb-4">Email does not exist.</h1>
 					<?php } 
-						else if(@$_GET['status'] == 'resetSuccess'){ ?>
-							<h1 class="h4 text-gray-900 mb-4">Password Reset Success!</h1>
+						else if(@$_GET['status'] == 'fail'){ ?>
+							<h1 class="h4 text-gray-900 mb-4">Please provide a proper E-mail Address.</h1>
+					<?php } 
+						else if(@$_GET['status'] == 'unknown'){ ?>
+							<h1 class="h4 text-gray-900 mb-4">Invalid, please repeat the process.</h1>
 					<?php }
-						else if(@$_GET['status'] == 'success'){ ?>
-							<h1 class="h4 text-gray-900 mb-4">Register Success!</h1>
-					<?php } 
 						else { ?>                 
-							<h1 class="h4 text-gray-900 mb-4">Welcome Back!</h1>
+							<h1 class="h4 text-gray-900 mb-4">Forgot your Password?</h1>
 					<?php } ?>
                   </div>
-                  <form class="user">
+                  <form class="user" action="actForgotPassword" method="post">
                     <div class="form-group">
-                      <input type="email" class="form-control form-control-user" id="exampleInputEmail" aria-describedby="emailHelp" placeholder="Enter Email Address...">
+                      <input type="email" class="form-control form-control-user" name="inputEmail" id="inputEmail" aria-describedby="emailHelp" placeholder="Enter Your Email Address...">
                     </div>
                     <div class="form-group">
-                      <input type="password" class="form-control form-control-user" id="exampleInputPassword" placeholder="Password">
+                      <input type="password" class="form-control form-control-user dropdown-toggle" id="securityQuestion" placeholder="Your Security Question">
                     </div>
-					<!--
-                    <div class="form-group">
-                      <div class="custom-control custom-checkbox small">
-                        <input type="checkbox" class="custom-control-input" id="customCheck">
-                        <label class="custom-control-label" for="customCheck">Remember Me</label>
-                      </div>
-                    </div>
-					-->
-                    <a href="index.html" class="btn btn-primary btn-user btn-block">
-                      Login
-                    </a>
+					<input type="hidden" name="<?php echo $this->security->get_csrf_token_name();?>" value="<?php echo $this->security->get_csrf_hash();?>">
+                    <button class="btn btn-primary btn-user btn-block" type="submit">
+                      Request password change
+                    </button>
                   </form>
                   <hr>
-                  <div class="text-center">
-                    <a class="small" href="forgotPassword">Forgot Password?</a>
-                  </div>
                   <div class="text-center">
                     <a class="small" href="register">Create an Account!</a>
                   </div>
