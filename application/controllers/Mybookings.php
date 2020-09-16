@@ -3,6 +3,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Mybookings extends CI_Controller {
 	public function __construct(){
 		parent::__construct();
+		$id=$this->session->userdata('id');
+		$email=$this->session->userdata('email');
+		if (!$id || !$email){
+			session_destroy();
+			redirect('/auth/login');
+		}
 	}
 
 	public function index(){
@@ -11,6 +17,11 @@ class Mybookings extends CI_Controller {
 		);
 
 		$this->display_page('mybookings', $setting);
+	}
+	
+	public function userLogout(){
+		session_destroy();
+		header('location:../auth/login');
 	}
 
 	//display
