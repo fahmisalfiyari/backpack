@@ -74,6 +74,9 @@ class M_ticket extends CI_Model {
     return $this->db->get($this->table_route)->row_array();
   }
 
+
+  // ================================================================
+
   public function loadRouteSchedule($id){
     $this->db->select('*');
     $this->db->where('id_route', $id);
@@ -84,6 +87,14 @@ class M_ticket extends CI_Model {
     $this->db->select('*');
     $this->db->where('id', $id);
     return $this->db->get($this->table_schedule)->row_array();
+  }
+
+  // ===================================================================
+
+  public function loadAllPromoAvailable(){
+    $this->db->select('*');
+    $this->db->where('status', 1);
+      return $this->db->get($this->table_promo)->result_array();
   }
 
 }
