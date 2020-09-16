@@ -78,7 +78,6 @@ class Explore extends CI_Controller {
 	public function loadSchedule(){
 		$ids = $this->input->post('ids') ? $this->input->post('ids') : null;
 		if($ids){
-
 			$schedule = $this->m_ticket->getScheduleById($ids);
 			if($schedule){
 				$data['schedule'] = $schedule;
@@ -87,12 +86,75 @@ class Explore extends CI_Controller {
 				$data['price_parsing'] = rupiah($route['price']);
 				$data['time_format'] = date_eng4($schedule['time']);
 				$data['price'] = $route['price'];
+
+				//chek promo
+				$promo = $this->m_ticket->loadAllPromoAvailable();
+
+				if($promo){
+					$data['promo'] = 'exist';
+				}else{
+					$data['promo'] = 'none';
+				}
+
 				$data['status'] = 'success';
 				echo json_encode($data);
 			}else{
 				$data['status'] = 'error';
 				echo json_encode($data);
 			}
+		}
+	}
+
+	public function loadPromo(){
+		$promo = $this->m_ticket->loadAllPromoAvailable();
+		if($promo){
+			$html = '';
+			// $type = '';
+			// $discVal = '';
+			// $disc;
+
+			foreach ($promo as $pro) {
+				if($pro['value'] || $pro['percentage']){
+
+					if($pro['value'] && $pro['percentage']==null){
+						$disc = rupiah($pro['value']);
+						$type = 1;
+						$discVal = $pro['value'];
+					}else if($pro['percentage'] && $pro['value']==null){
+						$disc = $pro['percentage'].'%';
+						$type = 2;
+						$discVal = $pro['percentage'];
+					}
+
+					$html .= '
+						<a href="javascript:void(0);" class="text-muted" style="text-decoration: none;" onclick="selectPromo('.$pro['id'].','.$discVal.','.$type.');">
+				        	<div class="col-xs-3 col-md-12 mb-4 cursoron">
+					          <div class="card border-left-success shadow h-100 py-2">
+					            <div class="card-body">
+					              <div class="row no-gutters align-items-center">
+					                <div class="col mr-2">
+					                  <div class="h5 mb-2 font-weight-bold text-gray-800">'.$pro['name'].'</div>
+					                  <div class="text font-weight-bold text-primary">Discount : '.$disc.'</div>
+					                  <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Click to use this promo</div>
+					                </div>
+					                <div class="col-auto">
+				                  		<i class="fas fa-tags fa-2x text-gray-300"></i>
+					                </div>
+					              </div>
+					            </div>
+					          </div>
+					        </div>
+					    </a>
+					';
+				}
+			}
+
+			$data['html'] = $html;			
+			$data['status'] = 'success';
+			echo json_encode($data);
+		}else{
+			$data['status'] = 'error';
+			echo json_encode($data);
 		}
 	}
 

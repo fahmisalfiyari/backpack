@@ -78,6 +78,7 @@
         		</tr>
         		<input type="hidden" name="promo_id" id="promo_id">
         		<input type="hidden" name="price" id="price">
+        		<input type="hidden" name="price_disc" id="price_disc">
         	</table>
         </div>
         <div class="modal-footer">
@@ -89,7 +90,7 @@
   </div>
 
   <div class="modal fade" id="modal_promo" tabindex="-1">
-    <div class="modal-dialog modal-sm" role="document">
+    <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="exampleModalLabel">List Available Promo</h5>
@@ -97,7 +98,26 @@
             <span aria-hidden="true">×</span>
           </button>
         </div>
-        <div class="modal-body">List Promo</div>
+        <div class="modal-body" id="body_promo" style="overflow-y: auto; height: 70vh;">
+        	<a href="javascript:void(0);" class="text-muted" style="text-decoration: none;" onclick="selectPromo(1);">
+	        	<div class="col-xs-3 col-md-12 mb-4 cursoron">
+		          <div class="card border-left-success shadow h-100 py-2">
+		            <div class="card-body">
+		              <div class="row no-gutters align-items-center">
+		                <div class="col mr-2">
+		                  <div class="h5 mb-2 font-weight-bold text-gray-800">Promo 1</div>
+		                  <div class="text font-weight-bold text-primary"><?= 'Discount : '.rupiah(500000);?></div>
+		                  <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Click to use this promo</div>
+		                </div>
+		                <div class="col-auto">
+	                  		<i class="fas fa-tag fa-2x text-gray-300"></i>
+		                </div>
+		              </div>
+		            </div>
+		          </div>
+		        </div>
+		    </a>
+        </div>
         <div class="modal-footer">
           <button class="btn btn-secondary" type="button" data-dismiss="modal" onclick="">Cancel</button>
         </div>
@@ -151,7 +171,7 @@
 		$('#promo_id').val('');
 		$('#book_price').html('');
 		$('#book_departure').html('');
-		// $('#book_promo').html('');
+		$('#book_promo').html('');
 		$('#book_from').html('');
 		$('#book_to').html('');
 
@@ -172,8 +192,16 @@
 					$('#book_from').html(data.route.from);
 					$('#book_to').html(data.route.to);
 					$('#book_price').html(data.price_parsing);
+					$('#price').val(data.route.price);
 					$('#book_departure').html(data.time_format);
 					$('#price').val(data.price);
+
+					if(data.promo == 'exist'){
+						$('#book_promo').html('<div class="d-flex justify-content-between"><span>Promo Ticket Available!</span><button class="btn btn-sm btn-success" onclick="showAvailablePromo()">Promo</button></div>');
+					}else{
+						$('#book_promo').html('Currently, there is no promo Available');
+					}
+
 					$('#modal2').modal('show');
 				}else{
 					alert('Failed to open book window process');
@@ -183,7 +211,73 @@
 	}
 
 	function showAvailablePromo(){
+		$('#body_promo').html('');
+		$.ajax({
+			url 		: '<?=base_url()?>explore/loadPromo',
+			dataType	: 'json',
+			method 		: 'POST',
+			data 		: {
+				func 	: 'getNewLocations', '<?=$this->security->get_csrf_token_name()?>':'<?=$this->security->get_csrf_hash()?>',
+			},
+			success		: function(data){
+				if(data.status == 'success'){
+					$('#body_promo').html(data.html);
+					$('#modal2').modal('show');
+				}else{
+					alert('Failed to open book window process');
+				}
+			}
+		});
 		$('#modal2').modal('hide');
 		$('#modal_promo').modal('show');
+	}
+
+	function selectPromo(idPromo, discVal, discType){
+		$('#promo_id').val(idPromo);
+
+		var discatf;
+		var discnow = $('#price').val();
+
+		if(discType == 1){
+			discatf = discnow - discVal;
+		}else if(discType == 2){
+			discatf = discnow - ((discVal/100)*discnow);
+		}
+
+		$('#price_disc').val(discatf);
+		$('#book_promo').html('<div class="d-flex justify-content-between"><span>Promo Applied!</span><button class="btn btn-sm btn-success" onclick="showAvailablePromo()">Change Promo</button></div>');
+
+		discnow = formatRupiah(discnow, 'Rp. ');
+		discatf = formatRupiah(discatf, 'Rp. ');
+
+		$('#book_price').html('<strike>'+discnow+'</strike>&nbsp;&nbsp;'+discatf);
+
+
+		$('#modal2').modal('show');
+		$('#modal_promo').modal('hide');
+	}
+
+	/* Fungsi formatRupiah */
+	function formatRupiah(angka, prefix){
+		// var number_string = angka.replace(/[^,\d]/g, '').toString(),
+		// split   		= number_string.split(','),
+		// sisa     		= split[0].length % 3,
+		// rupiah     		= split[0].substr(0, sisa),
+		// ribuan     		= split[0].substr(sisa).match(/\d{3}/gi);
+
+		// // tambahkan titik jika yang di input sudah menjadi angka ribuan
+		// if(ribuan){
+		// 	separator = sisa ? '.' : '';
+		// 	rupiah += separator + ribuan.join('.');
+		// }
+
+		// rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
+	
+		
+		
+		var	reverse = angka.toString().split('').reverse().join(''),
+		ribuan 	= reverse.match(/\d{1,3}/g);
+		rupiah	= ribuan.join('.').split('').reverse().join('');
+		return prefix == undefined ? rupiah : (rupiah ? 'Rp. ' + rupiah +',00': '');
 	}
 </script>
