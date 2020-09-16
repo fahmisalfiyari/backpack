@@ -67,10 +67,10 @@
 						
 						<?php if($profile->identity_card){
 							
-							echo"<img src = ./files/".$profile->identity_card." width='100' height='100' id='ktp'><input type='file' class='form-control' name='userfile' id='userfile' style='display:hidden;' accept='image/*' onChange='validate(this.value)' accept='.jpg,.jpeg,.png'>";
+							echo"<img src = ../files/".$profile->identity_card." width='100' height='100' id='ktp'><input type='file' class='form-control' name='userfile' id='userfile' style='display:hidden;' accept='image/*' onChange='validate(this.value)' accept='.jpg,.jpeg,.png'>";
 							
 						} else {
-							echo"<img src = ./files/default_pic.png width='100' height='100' id='ktp'><input type='file' class='form-control' name='userfile' id='userfile' style='display:hidden;' accept='image/*' onChange='validate(this.value)' accept='.jpg,.jpeg,.png'>";
+							echo"<img src = ../files/default_pic.png width='100' height='100' id='ktp'><input type='file' class='form-control' name='userfile' id='userfile' style='display:hidden;' accept='image/*' onChange='validate(this.value)' accept='.jpg,.jpeg,.png'>";
 							
 						}
 						?>
