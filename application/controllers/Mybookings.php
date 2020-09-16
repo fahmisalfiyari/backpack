@@ -1,11 +1,22 @@
-<!-- Begin Page Content -->
-<div class="container-fluid">
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+class Mybookings extends CI_Controller {
+	public function __construct(){
+		parent::__construct();
+	}
 
-  <!-- Page Heading -->
-  <h1 class="h3 mb-4 text-gray-800">This is My Bookings Page</h1>
+	public function index(){
+		$setting = array(
+			'title' 			=> 'Backpack | My Bookings'
+		);
 
-</div>
-<!-- /.container-fluid -->
+		$this->display_page('mybookings', $setting);
+	}
 
-</div>
-<!-- End of Main Content -->
+	//display
+	private function display_page($main_content, $setting=null, $data=null){
+		$this->load->view("template/header", $setting);
+		$this->load->view($main_content,$data);
+		$this->load->view("template/footer");
+	}
+}
