@@ -117,7 +117,7 @@ class Auth extends CI_Controller {
 		$email    = @$_POST['inputEmail'];
 		$dateRegister = date("Ymd",time()).date("His");
 		$hash = hash("sha256",($email.$dateRegister));
-		$link = 'http://localhost/backpack/auth/resetPassword?key='.($hash);
+		$link = 'http://'.$_SERVER[HTTP_HOST].str_replace('/actForgotPassword','',$_SERVER[REQUEST_URI]).'/resetPassword?key='.($hash);
 		
 		if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
 			header('location:forgotPassword?status=fail');
