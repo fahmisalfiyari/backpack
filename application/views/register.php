@@ -50,7 +50,7 @@
 							<h1 class="h4 text-gray-900 mb-4">Hello There!</h1>
 					<?php } ?>
                   </div>
-                  <form method="post" action="actoRegister" class="user">
+                  <form method="post" action="actRegister" class="user">
 					<div class="form-group">
                       <input pattern="([A-z0-9À-ž\s]){2,}" type="text" class="form-control form-control-user" id="exampleInputFullName" name="inputFullName" aria-describedby="emailHelp" placeholder="Enter Your Name..">
                     </div>

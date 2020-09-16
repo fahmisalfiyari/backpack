@@ -31,30 +31,36 @@ class Auth extends CI_Controller {
 	}
 	
 	public function resetPassword(){
-		$setting = array(
-			'title' => 'My Bookings'
-		);
-
+		date_default_timezone_set("Asia/Jakarta");
+		$dateRegister = date("Ymd",time()).date("His");
+		$key  = @$_GET['key'];
+		
+		$getForgotReq = $this->m_auth->getForgotPassword($key,'0');
+		if($getForgotReq['link'] == NULL) {
+			header('location:forgotPassword?status=unknown');
+			exit;
+		}
+		else {
+			$updateForgotPass = $this->m_auth->updateForgotPassword($key,'1');
+			if ($updateForgotPass['link'] != NULL) {
+				}		 
+			else {
+				header('location:forgotPassword?status=unknown');
+				exit;
+			}  
+		}
 		$this->load->view('resetPassword');
 	}
 	
 	public function actRegister(){
-		$setting = array(
-			'title' => 'My Bookings'
-		);
-
-		$this->load->view('../function/actRegister');
-	}
-	
-	public function actoRegister(){
+		date_default_timezone_set("Asia/Jakarta");
+		
 		$email = @$_POST['inputEmail'];
 		$id	= mt_rand(0, 999999);
 		$fullname = @$_POST['inputFullName'];
 		$email    = @$_POST['inputEmail'];
 		$password  = hash("sha256",@$_POST['inputPassword']);
 		$retypepassword  = hash("sha256",@$_POST['inputRetypePassword']);
-	
-		date_default_timezone_set("Asia/Jakarta");
 		$dateRegister = date("Ymd",time()).date("His");
 	
 		$fullname = preg_replace("/[^a-zA-Z0-9\s]/", "", $fullname);
@@ -90,10 +96,7 @@ class Auth extends CI_Controller {
 							header('location:login?status=success');
 						}
 						else {
-							//$sql_revoke = "DELETE FROM users WHERE email = '$email'";
-							//if($conn->query($sql_revoke) === TRUE){
 							header('location:register?status=fail');
-							//}
 						}
 					} 
 					else {
@@ -109,19 +112,68 @@ class Auth extends CI_Controller {
 	}
 	
 	public function actForgotPassword(){
-		$setting = array(
-			'title' => 'My Bookings'
-		);
-
-		$this->load->view('../function/actForgotPassword');
+		date_default_timezone_set("Asia/Jakarta");
+		
+		$email    = @$_POST['inputEmail'];
+		$dateRegister = date("Ymd",time()).date("His");
+		$hash = hash("sha256",($email.$dateRegister));
+		$link = 'http://localhost/backpack/auth/resetPassword?key='.($hash);
+		
+		if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+			header('location:forgotPassword?status=fail');
+			exit;
+		}	
+		else {
+			$email = filter_var($email, FILTER_SANITIZE_STRING);
+		}
+		
+		$userCheck = $this->m_auth->getUserByEmail($email);
+		if($userCheck['email'] == NULL) {
+			header('location:forgotPassword?status=failed');
+			exit;
+		}
+		else {
+			$forgotPasswordInsert = $this->m_auth->insertForgotPassword($email, $hash, $link, '0', $dateRegister);
+			if($forgotPasswordInsert['email'] != NULL) {
+				header('location:login?status=forgotPassword');
+				exit;
+			}
+			else {
+				header('location:forgotPassword?status=failed');
+				exit;
+			}
+		}
 	}
 	
 	public function actResetPassword(){
-		$setting = array(
-			'title' => 'My Bookings'
-		);
-
-		$this->load->view('../function/actResetPassword');
+		date_default_timezone_set("Asia/Jakarta");
+		$dateRegister = date("Ymd",time()).date("His");
+	    $password  = hash("sha256",@$_POST['inputPassword']);
+		$retypepassword  = hash("sha256",@$_POST['inputRetypePassword']);
+		$key = @$_POST['inputKey'];
+		
+		if ($password != $retypepassword) {
+			header('location:forgotPassword?status=unknown');
+			exit;
+		}
+		else {
+			$getForgotReq = $this->m_auth->getForgotPassword($key,'1');
+			if($getForgotReq['link'] == NULL) {
+				header('location:forgotPassword?status=unknown');
+				exit;
+			}
+			else {
+				$updateCredential = $this->m_auth->updateUserAuth($getForgotReq['email'], $password, $dateRegister);
+				if (updateCredential['email'] != NULL) {
+					header('location:login?status=resetSuccess');
+					exit;
+				}
+				else {
+					header('location:forgotPassword?status=unknown');
+					exit;
+				}
+			}
+		}
 	}
 
 	//display

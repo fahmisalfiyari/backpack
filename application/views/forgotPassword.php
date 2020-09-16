@@ -55,9 +55,6 @@
                     <div class="form-group">
                       <input type="email" class="form-control form-control-user" name="inputEmail" id="inputEmail" aria-describedby="emailHelp" placeholder="Enter Your Email Address...">
                     </div>
-                    <div class="form-group">
-                      <input type="password" class="form-control form-control-user dropdown-toggle" id="securityQuestion" placeholder="Your Security Question">
-                    </div>
 					<input type="hidden" name="<?php echo $this->security->get_csrf_token_name();?>" value="<?php echo $this->security->get_csrf_hash();?>">
                     <button class="btn btn-primary btn-user btn-block" type="submit">
                       Request password change
