@@ -4,15 +4,42 @@ class Auth extends CI_Controller {
 	public function __construct(){
 		parent::__construct();
 		$this->load->model('m_auth');
+		$id=$this->session->userdata('id');
+		$email=$this->session->userdata('email');
+		if ($id != NULL|| $email != NULL){
+			header('location:../mybookings');
+		}
 	}
 
 	public function login(){
-		$setting = array(
-			'title' => 'My Bookings'
-		);
-
 		$this->load->view('login');
 	}
+
+	public function actLogin(){
+		$email = $_POST['inputEmail'];
+		$password  = hash("sha256",@$_POST['inputPassword']);
+		$userSignin = $this->m_auth->userLogin($email, $password);
+		$id = $userSignin['id'];
+		
+		if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+			header('location:login?status=failed');
+			exit;
+		}
+		else {
+			$email = filter_var($email, FILTER_SANITIZE_STRING);
+		}
+		
+		if($userSignin['email'] == NULL) {
+			header('location:login?status=failed');
+		}
+		else {
+			session_start();
+			$_SESSION['email'] = $email;
+			$_SESSION['id'] = $id;
+			header('location:../mybookings');
+		}
+	}
+	
 	
 	public function register(){
 		$setting = array(

@@ -11,6 +11,15 @@ class M_auth extends CI_Model {
     $this->db = $this->load->database('default', TRUE);
   }
 
+	public function userLogin($email, $password){
+		$this->db->select('*');
+		$this->db->where([
+						'email'=>$email,
+						'password'=>$password
+					]);
+		return $this->db->get($this->table_account)->row_array();
+	}
+	
 	public function getUserByEmail($email){
 		$this->db->select('email, id');
 		$this->db->where('email', $email);
