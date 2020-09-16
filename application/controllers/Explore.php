@@ -15,6 +15,7 @@ class Explore extends CI_Controller {
 			'title' 			=> 'Backpack | Explore '
 		);
 
+		
 		$this->display_page('explore', $setting, $data);
 	}
 
@@ -22,7 +23,7 @@ class Explore extends CI_Controller {
 		$id = $this->uri->segment('3');
 		if($id){
 			$idr = decrypt_id($this->uri->segment('3'));
-			$schedule 	= $this->m_ticket->loadSchedule($idr);
+			$schedule 	= $this->m_ticket->loadRouteSchedule($idr);
 			$route 		= $this->m_ticket->getRouteById($idr);
 
 			$data['schedule'] = $schedule;
@@ -56,20 +57,14 @@ class Explore extends CI_Controller {
 				$row[] 	= date_eng4($result->time);
 				$row[] 	= $result->seats;
 
-				// if($result->status==1){
-				// 	$row[] = '<span class="badge badge-success">Active</span>';
-				// }else{
-				// 	$row[] = '<span class="badge badge-danger">Inactive</span>';
-				// }
-
-				$row[] 	= '<a href="javascript:void(0)" class="btn btn-info btn-sm" tabindex="-1" role="button" title="Preview" onclick="preview('.$result->id.')"><i class="material-icons" style="font-size:16px; padding:3px;">Book</i></a>';
+				$row[] 	= '<button class="btn btn-secondary" type="button" onclick="confirm('.$result->id.')"><span class="material-icons" style="font-size:16px; padding:3px;">Book</span></a>';
 				$data[]	= $row;
 			}
 
 			$output = array(
 				'draw' 				=> $_POST['draw'],
-				'recordsTotal'		=> $this->m_ticket->count_all($table),
-				'recordsFiltered'	=> $this->m_ticket->count_filtered($table),
+				'recordsTotal'		=> $this->m_ticket->count_all($table, decrypt_id($id)),
+				'recordsFiltered'	=> $this->m_ticket->count_filtered($table, decrypt_id($id)),
 				'data'				=> $data
 			);
 
@@ -77,6 +72,27 @@ class Explore extends CI_Controller {
 		}else{
 			$output = 'No csrf token passed #1';
 			echo json_encode($output);
+		}
+	}
+
+	public function loadSchedule(){
+		$ids = $this->input->post('ids') ? $this->input->post('ids') : null;
+		if($ids){
+
+			$schedule = $this->m_ticket->getScheduleById($ids);
+			if($schedule){
+				$data['schedule'] = $schedule;
+				$route  = $this->m_ticket->getRouteById($schedule['id_route']);
+				$data['route'] = $route;
+				$data['price_parsing'] = rupiah($route['price']);
+				$data['time_format'] = date_eng4($schedule['time']);
+				$data['price'] = $route['price'];
+				$data['status'] = 'success';
+				echo json_encode($data);
+			}else{
+				$data['status'] = 'error';
+				echo json_encode($data);
+			}
 		}
 	}
 

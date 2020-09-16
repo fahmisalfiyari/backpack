@@ -12,12 +12,14 @@ class M_ticket extends CI_Model {
     $this->db = $this->load->database('default', TRUE);
   }
 
+  /* DataTables Related Start */
+
   public function get_datatable($table, $id = null){
       $function = 'query_'.$table;
       if($id != null){
         $this->$function($id);
       }else{
-        $this->function();
+        $this->$function();
       }
       if(isset($_POST['length']) && $_POST['length'] != -1)
       $this->db->limit($_POST['length'], $_POST['start']);
@@ -26,15 +28,24 @@ class M_ticket extends CI_Model {
       return $query->result();
   }
 
-  public function count_filtered($table){
+  public function count_filtered($table, $id = null){
       $function = 'query_'.$table;
-      $this->$function();
+      if($id != null){
+        $this->$function($id);
+      }else{
+        $this->$function();
+      }
       $query = $this->db->get();
       return $query->num_rows();
   }
 
-  public function count_all($table){
+  public function count_all($table, $id = null){
       $this->db->from($table);
+
+      if($id && $table == 'route_schedule'){
+        $this->db->where('id_route', $id);
+      }
+
       return $this->db->count_all_results();
   }
 
@@ -49,6 +60,9 @@ class M_ticket extends CI_Model {
     $this->db->order_by('time', 'asc');
   }
 
+  /* DataTables Related Ended */
+
+
   public function loadAllRoute(){
     $this->db->select('*');
     return $this->db->get($this->table_route)->result_array();
@@ -60,10 +74,16 @@ class M_ticket extends CI_Model {
     return $this->db->get($this->table_route)->row_array();
   }
 
-  public function loadSchedule($id){
+  public function loadRouteSchedule($id){
     $this->db->select('*');
     $this->db->where('id_route', $id);
     return $this->db->get($this->table_schedule)->result_array();
+  }
+
+  public function getScheduleById($id){
+    $this->db->select('*');
+    $this->db->where('id', $id);
+    return $this->db->get($this->table_schedule)->row_array();
   }
 
 }
