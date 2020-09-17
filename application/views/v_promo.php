@@ -18,9 +18,9 @@
 		                <div class="col mr-2">
 		                  <div class="h4 mb-2 font-weight-bold text-gray-800"><?= $diskon['name'];?></div>
 		                  <?php if($diskon['value'] && $diskon['percentage']==null){ ?>
-			                  <div class="text font-weight-bold text-primary"><?= 'Discount : '.rupiah($diskon['value']);?></div>
+			                  <div class="text font-weight-bold text-success"><?= 'Discount : '.rupiah($diskon['value']);?></div>
 			              <?php }else if($diskon['percentage'] && $diskon['value']==null){?>
-			              		<div class="text font-weight-bold text-primary"><?= 'Discount : '.$diskon['percentage'].'%';?></div>
+			              		<div class="text font-weight-bold text-success"><?= 'Discount : '.$diskon['percentage'].'%';?></div>
 			              <?php } ?>
 		                </div>
 		                <div class="col-auto">

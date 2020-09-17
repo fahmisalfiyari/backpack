@@ -3,7 +3,17 @@
 
   <!-- Page Heading -->
   <div class="d-sm-flex align-items-center justify-content-between mb-4">
-    <h1 class="h3 mb-0 text-gray-800">My Bookings</h1>
+  	<?php if(isset($result) && $result){ 
+  			if($result == 1){
+  	?>
+	    <h1 class="h3 mb-0 text-gray-800">Search Result for - <?= $q ?></h1>
+	<?php 	}else if($result == 98){?>
+	    <h1 class="h3 mb-0 text-gray-800">We can't find what you're looking :((</h1>
+	<?php 	} ?>
+  		
+  	<?php }else{?>
+	    <h1 class="h3 mb-0 text-gray-800">My Bookings</h1>
+	<?php }?>
   </div>
 
   <?php if(isset($booking) && $booking!=null){ ?>
@@ -56,9 +66,13 @@
 		<?php } ?>
 	  </div>
   <?php }else{ ?>
-  	<div class="row">
-  		<h4>Currently, You Are not booking any schedule ....</h4>
-  	</div>
+  	<?php if(isset($result) && $result){
+
+  	}else{ ?>
+	  	<div class="row">
+	  		<h4>Currently, You are not booking any schedule ....</h4>
+	  	</div>
+	<?php } ?>
   <?php } ?>
 
 </div>

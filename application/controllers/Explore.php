@@ -144,8 +144,8 @@ class Explore extends CI_Controller {
 					              <div class="row no-gutters align-items-center">
 					                <div class="col mr-2">
 					                  <div class="h5 mb-2 font-weight-bold text-gray-800">'.$pro['name'].'</div>
-					                  <div class="text font-weight-bold text-primary">Discount : '.$disc.'</div>
-					                  <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Click to use this promo</div>
+					                  <div class="text font-weight-bold text-success">Discount : '.$disc.'</div>
+					                  <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Click to use this promo</div>
 					                </div>
 					                <div class="col-auto">
 				                  		<i class="fas fa-tags fa-2x text-gray-300"></i>
