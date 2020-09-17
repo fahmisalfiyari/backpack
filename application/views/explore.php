@@ -22,7 +22,7 @@
 		                </div>
 		                <div class="col-auto">
 		                	<? if($rute['type'] ==1){ ?>
-		                  		<i class="fas fa-car fa-2x text-gray-300"></i>
+		                  		<i class="fas fa-train fa-2x text-gray-300"></i>
 		                  	<? }else if($rute['type'] == 2){ ?>
 		                  		<i class="fas fa-plane fa-2x text-gray-300"></i>
 		                  	<? } ?>
