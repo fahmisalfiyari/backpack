@@ -132,5 +132,11 @@ class M_ticket extends CI_Model {
     return $this->db->get($this->table)->result_array();
   }
 
+  public function searchBook($q, $id){
+    $this->db->like('code', $q);
+    $this->db->where('id_user', $id);
+    return $this->db->get($this->table)->result_array();
+  }
+
 
 }
