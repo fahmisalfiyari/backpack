@@ -77,13 +77,14 @@
         			<td><b id="book_price">500000</b></td>
         		</tr>
         		<input type="hidden" name="promo_id" id="promo_id">
+        		<input type="hidden" name="sc_id" id="sc_id">
         		<input type="hidden" name="price" id="price">
         		<input type="hidden" name="price_disc" id="price_disc">
         	</table>
         </div>
         <div class="modal-footer">
           <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-          <a class="btn btn-primary" href="login.html">Book</a>
+          <a class="btn btn-primary" href="javascript:void(0);" onclick="doBook()">Book</a>
         </div>
       </div>
     </div>
@@ -98,7 +99,7 @@
             <span aria-hidden="true">×</span>
           </button>
         </div>
-        <div class="modal-body" id="body_promo" style="overflow-y: auto; height: 70vh;">
+        <div class="modal-body" id="body_promo" style="overflow-y: auto;">
         	<a href="javascript:void(0);" class="text-muted" style="text-decoration: none;" onclick="selectPromo(1);">
 	        	<div class="col-xs-3 col-md-12 mb-4 cursoron">
 		          <div class="card border-left-success shadow h-100 py-2">
@@ -120,6 +121,25 @@
         </div>
         <div class="modal-footer">
           <button class="btn btn-secondary" type="button" data-dismiss="modal" onclick="">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="modal_feedback" tabindex="-1">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Booking Status</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body" id="body_promo" style="overflow-y: auto;">
+        	<span id="txt_feedback"></span>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="button" data-dismiss="modal" onclick="">Close</button>
         </div>
       </div>
     </div>
@@ -193,6 +213,7 @@
 					$('#book_to').html(data.route.to);
 					$('#book_price').html(data.price_parsing);
 					$('#price').val(data.route.price);
+					$('#sc_id').val(ids);
 					$('#book_departure').html(data.time_format);
 					$('#price').val(data.price);
 
@@ -259,25 +280,33 @@
 
 	/* Fungsi formatRupiah */
 	function formatRupiah(angka, prefix){
-		// var number_string = angka.replace(/[^,\d]/g, '').toString(),
-		// split   		= number_string.split(','),
-		// sisa     		= split[0].length % 3,
-		// rupiah     		= split[0].substr(0, sisa),
-		// ribuan     		= split[0].substr(sisa).match(/\d{3}/gi);
-
-		// // tambahkan titik jika yang di input sudah menjadi angka ribuan
-		// if(ribuan){
-		// 	separator = sisa ? '.' : '';
-		// 	rupiah += separator + ribuan.join('.');
-		// }
-
-		// rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
-	
-		
-		
 		var	reverse = angka.toString().split('').reverse().join(''),
 		ribuan 	= reverse.match(/\d{1,3}/g);
 		rupiah	= ribuan.join('.').split('').reverse().join('');
 		return prefix == undefined ? rupiah : (rupiah ? 'Rp. ' + rupiah +',00': '');
+	}
+
+	function doBook(){
+		$.ajax({
+			url 		: '<?=base_url()?>explore/actBook',
+			dataType	: 'json',
+			method 		: 'POST',
+			data 		: {
+				func 	: 'getNewLocations', '<?=$this->security->get_csrf_token_name()?>':'<?=$this->security->get_csrf_hash()?>',
+				'sc_id' : $('#sc_id').val(),
+				'promo_id' : $('#promo_id').val(),
+			},
+			success		: function(data){
+				if(data.status == 'success'){
+					$('#txt_feedback').html('Booking Succes! Enjoy your Travel :)');
+				}else{
+					$('#txt_feedback').html('Booking Failed :( , Please Try Again Later');
+				}
+
+				$('#modal2').modal('hide');
+				$('#modal_feedback').modal('show');
+				table.ajax.reload(null,false);
+			}
+		});
 	}
 </script>

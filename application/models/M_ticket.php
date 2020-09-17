@@ -89,6 +89,11 @@ class M_ticket extends CI_Model {
     return $this->db->get($this->table_schedule)->row_array();
   }
 
+  public function updateSchedule($id, $data){
+    $this->db->where('id', $id);
+    $this->db->update($this->table_schedule, $data);
+  }
+
   // ===================================================================
 
   public function loadAllPromoAvailable(){
@@ -96,5 +101,36 @@ class M_ticket extends CI_Model {
     $this->db->where('status', 1);
       return $this->db->get($this->table_promo)->result_array();
   }
+
+  public function getPromoById($id){
+    $this->db->select('*');
+    $this->db->where('id', $id);
+    return $this->db->get($this->table_promo)->row_array();
+  }
+
+
+  // ======================================================================
+
+  public function addBooking($data){
+    $this->db->insert($this->table, $data);
+    return $this->db->insert_id();
+  }
+
+  public function getBooking($id){
+    $this->db->select('*');
+    $this->db->where('id', $id);
+    return $this->db->get($this->table)->row_array();
+  }
+
+  public function updateBooking($data, $id){
+    $this->db->where('id', $id);
+    $this->db->update($this->table, $data);
+  }
+
+  public function getMyBooking($id){
+    $this->db->where('id_user', $id);
+    return $this->db->get($this->table)->result_array();
+  }
+
 
 }

@@ -4,6 +4,12 @@ class Promo extends CI_Controller {
 	public function __construct(){
 		parent::__construct();
 		$this->load->model('m_ticket');
+		$id=$this->session->userdata('id');
+		$email=$this->session->userdata('email');
+		if (!$id || !$email){
+			session_destroy();
+			redirect('/auth/login');
+		}
 	}
 
 	public function index(){

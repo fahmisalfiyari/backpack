@@ -4,6 +4,12 @@ class Explore extends CI_Controller {
 	public function __construct(){
 		parent::__construct();
 		$this->load->model('m_ticket');
+		$id=$this->session->userdata('id');
+		$email=$this->session->userdata('email');
+		if (!$id || !$email){
+			session_destroy();
+			redirect('/auth/login');
+		}
 	}
 
 	public function index(){
@@ -57,7 +63,11 @@ class Explore extends CI_Controller {
 				$row[] 	= date_eng4($result->time);
 				$row[] 	= $result->seats;
 
-				$row[] 	= '<button class="btn btn-secondary" type="button" onclick="confirm('.$result->id.')"><span class="material-icons" style="font-size:16px; padding:3px;">Book</span></a>';
+				if($result->seats > 0){
+					$row[] 	= '<button class="btn btn-info" type="button" onclick="confirm('.$result->id.')"><span class="material-icons" style="font-size:16px; padding:3px;">Book</span></a>';
+				}else{
+					$row[] 	= '<button class="btn btn-secondary" type="button"><span class="material-icons" style="font-size:16px; padding:3px;">No Seat Available</span></a>';
+				}
 				$data[]	= $row;
 			}
 
@@ -152,6 +162,49 @@ class Explore extends CI_Controller {
 			$data['html'] = $html;			
 			$data['status'] = 'success';
 			echo json_encode($data);
+		}else{
+			$data['status'] = 'error';
+			echo json_encode($data);
+		}
+	}
+
+	public function actBook(){
+		$sc_id 	= $this->input->post('sc_id') ? $this->input->post("sc_id") : null;
+		$promo_id 	= $this->input->post('promo_id') ? $this->input->post("promo_id") : null;
+
+		if($sc_id){
+			$id_user  = $this->session->userdata('id');
+			$email  = $this->session->userdata('email');
+
+			$data['id_user'] = $id_user;
+			$data['id_ticket'] = $sc_id;
+			$data['status'] = 2;
+			$data['created_at'] = date('Y-m-d H:i:s');
+
+			if($promo_id){
+				$data['promo_id'] = $promo_id;
+			}
+
+			$booking_id = $this->m_ticket->addBooking($data);
+
+
+			$schedule = $this->m_ticket->getScheduleById($sc_id);
+			$route 		= $this->m_ticket->getRouteById($schedule['id_route']);
+
+			if($route['type'] == 1){
+				$datax['code'] = 'LN'.$schedule['id_route'].'B'.$booking_id;
+			}else{
+				$datax['code'] = 'AR'.$schedule['id_route'].'F'.$booking_id;
+			}
+
+			$this->m_ticket->updateBooking($datax, $booking_id);
+
+			$dataz['seats'] = $schedule['seats'] - 1;
+			$this->m_ticket->updateSchedule($schedule['id'], $dataz);
+
+			$data['status'] = 'success';
+			echo json_encode($data);
+
 		}else{
 			$data['status'] = 'error';
 			echo json_encode($data);
