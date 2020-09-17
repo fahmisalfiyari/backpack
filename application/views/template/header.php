@@ -93,6 +93,12 @@
                 <span class="text-gray-600">Promo Code</span>
               </a>
             </li>
+			
+			<li class="nav-item mx-1">
+              <a class="nav-link" href="<?=base_url().'review';?>">
+                <span class="text-gray-600">Review</span>
+              </a>
+            </li>
 
            
 

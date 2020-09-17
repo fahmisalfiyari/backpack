@@ -63,7 +63,7 @@
 				<div data-v-60934d09="" class="full-width">
 				<div data-v-60934d09="" class="">
 					
-					<div data-v-60934d09="" class="profile-profile-outter" style="display" style='width: 50px height: 50px'>
+					<div data-v-60934d09="" class="profile-profile-outter" style="display">
 						
 						<?php if($profile->identity_card){
 							

@@ -19,6 +19,15 @@
 			$query = $this->db->get();
 			return $query->row();
         }
+		
+		public function getComment($id)
+        {
+			$this->db->select('comment');
+			$this->db->from('user_profile');
+			$this->db->where('id_user',$id);
+			$query = $this->db->get();
+			return $query->row();
+        }
 
 
 		public function updateProfile($data_profile,$id_user)
