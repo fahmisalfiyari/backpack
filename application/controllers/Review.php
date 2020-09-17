@@ -67,7 +67,7 @@ class Review extends CI_Controller {
      
 		$this->index();
     }
-
+	
 
 	//display
 	private function display_page($main_content, $setting=null, $data=null){
