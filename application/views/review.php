@@ -2,15 +2,17 @@
 <div class="container-fluid">
 
   <!-- Page Heading -->
-  <h1 class="h3 mb-4 text-gray-800">Reviews</h1>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+  <h1 class="h3 mb-4 text-gray-800">Reviews and Ratings</h1>
 
 </div>
 <!-- /.container-fluid -->
 
 <div data-v-5b6cdb01="" class="container">
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
 	<div class="card mb-4 shadow-sm">
 		<div class="card-body">
 			<form method="post" action="<?=base_url();?>Review/actReview" autocomplete="off" id="actReview" name="actReview">
@@ -19,18 +21,36 @@
 				<div data-v-60934d09="" class="profile-section">
 				<div data-v-60934d09="" class="rowform-group">
 				
-				<?php if($owncomment == null){
+				<?php 
+					if($login != '0'){ //login
+						if($owncomment == null){
 							echo "<h3 class='h3 mb-4 text-gray-800'>Rate this Service</h3>";
-							echo "<div class='form-group'><input type='text' name='comment_name' id='comment_name' class='form-control' placeholder='Enter Name' /></div>";
+							//echo "<div class='form-group'><input type='hidden' name='comment_name' id='comment_name' class='form-control' value= /></div>";
 							echo "<div class='form-group'><textarea name='comment_content' id='comment_content' class='form-control' rows='5' placeholder='Enter Comment'></textarea></div>";
 							echo "<div class='form-group'><input type='hidden' name='comment_id' id='comment_id' value='0' /><input type='submit' name='submit' id='submit' class='btn btn-info' value='Submit' /></div>";
 						} else {
 							echo "<h3 class='h3 mb-4 text-gray-800'>Your Reviews</h3>";
-							echo "<label data-v-60934d09='' for='comment_sender_name'>".$owncomment->comment_sender_name." on ".$owncomment->date."</label><br></br>";
-							echo "<div class='form-group'><textarea name='comment_content' id='comment_content' class='form-control' rows='5' disabled='disabled'>".$owncomment->comment."</textarea></div>";
-							echo "<div class='form-group'><input type='hidden' name='comment_id' id='comment_id' value='0' /><input type='submit' name='submit' id='submit' class='btn btn-info' value='Edit your comment' /></div>";
+							//echo "<label data-v-60934d09='' for='comment_sender_name'>".$owncomment->comment_sender_name." on ".$owncomment->date."</label><br></br>";
+							echo "<div class='panel panel-default'><div class='panel-heading'>".$owncomment->fullname." on ".$owncomment->date."</div>";
+							echo "<div class='panel-body'><ul class='list-inline'>";
+								for($count=1; $count<=5; $count++){
+									if($count <= $owncomment->rating){
+										$color = 'color:#ffcc00;';
+									} else {
+										$color = 'color:#ccc;';
+									}
+									
+									echo "<li style='cursor:pointer; ".$color." font-size:16px;'>&#9733;</li>";
+									//echo "<div class='' class='rating' style='cursor:pointer; ".$color." font-size:16px;'>&#9733;</div>";
+									//echo "<li title='".$count."' id='".$comm['comment_id']."-".$count."' data-index='".$count."'  data-business_id='".$comm['comment_id']."' data-rating='".$comm['rating']."' class='rating' style='cursor:pointer; ".$color." font-size:16px;'>&#9733;</li>";
+								}
+							echo "</ul></div>";
+							echo "<div class='panel-body'>".$owncomment->comment."</div></div>";
+							//echo "<div class='form-group'><textarea name='comment_content' id='comment_content' class='form-control' rows='5' disabled='disabled'>".$owncomment->comment."</textarea></div>";
+							//echo "<div class='form-group'><input type='hidden' name='comment_id' id='comment_id' value='0' /><input type='submit' name='submit' id='submit' class='btn btn-info' value='Edit your comment' /></div>";
 						
 						}
+					}
 				?>
 					
 					<br />
@@ -45,20 +65,30 @@
 					<br />
 					<div id="display_comment">
 					<?php
-						echo "<h2 class='h3 mb-4 text-gray-800'>Ratings and reviews</h2>";
-						if($allcomment != null){
+						if($login != '0'){ //login
+							echo "<h2 class='h3 mb-4 text-gray-800'>Reviews and Ratings</h2>";
+						}
+						if($allcomment == null){
+							echo "<div class='panel-body'><i><b>No review available</b></i></div>";
+						} else {
 							foreach ($allcomment as $comm){
 								
-								echo "<div class='panel panel-default'><div class='panel-heading'>By <b>".$comm['comment_sender_name']."</b> on <i>".$comm['date']."</i></div>";
+								echo "<div class='panel panel-default'><div class='panel-heading'>By <b>".$comm['fullname']."</b> on ".$comm['date']."</div>";
+								echo "<div class='panel-body'><ul class='list-inline'>";
 								for($count=1; $count<=5; $count++){
 									if($count <= $comm['rating']){
 										$color = 'color:#ffcc00;';
 									} else {
 										$color = 'color:#ccc;';
 									}
-									echo "<div class='' class='rating' style='cursor:pointer; ".$color." font-size:16px;'>&#9733;</div>";
+									
+									echo "<li style='cursor:pointer; ".$color." font-size:16px;'>&#9733;</li>";
+									//echo "<div class='' class='rating' style='cursor:pointer; ".$color." font-size:16px;'>&#9733;</div>";
 									//echo "<li title='".$count."' id='".$comm['comment_id']."-".$count."' data-index='".$count."'  data-business_id='".$comm['comment_id']."' data-rating='".$comm['rating']."' class='rating' style='cursor:pointer; ".$color." font-size:16px;'>&#9733;</li>";
 								}
+								echo "</ul></div>";
+								//echo $output = $color->$count;
+								//echo "<div class='' class='rating' style='cursor:pointer; ".$color[1]." font-size:16px;'>&#9733;</div>";
 								echo "<div class='panel-body'>".$comm['comment']."</div>";
 								//<div class="panel-footer" align="right"><button type="button" class="btn btn-default reply" id="'.$row["comment_id"].'">Reply</button></div>
 								
@@ -66,7 +96,9 @@
 								
 								echo "</div>";
 							}
-						}
+						} 
+						
+							
 					?>
 					</div>
 				</div>					
