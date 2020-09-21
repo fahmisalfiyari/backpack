@@ -30,7 +30,8 @@
         {
 			$this->db->insert('comment',$data);	
         }
-	
+		
+
 }
 
 ?>

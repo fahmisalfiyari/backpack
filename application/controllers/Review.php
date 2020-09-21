@@ -13,10 +13,7 @@ class Review extends CI_Controller {
 		if (!$this->id || !$this->email){
 			session_destroy();
 			redirect('/auth/login');
-		}
-		
-		
-		
+		}	
 	}
 
 	public function index(){
@@ -51,12 +48,14 @@ class Review extends CI_Controller {
 		);	
 		
 		$this->display_page('review', $setting, $data);
+		
 	}
 	
 	public function actReview()
     {
 	
 		$idx=$this->id;
+		$user_rating = $_POST["user_rating"];
 		
 		if (!empty($_POST["comment_content"]))
 		{
@@ -65,6 +64,7 @@ class Review extends CI_Controller {
 				'parent_comment_id' => $_POST['comment_id'],
 				'comment' => $_POST['comment_content'],
 				'comment_user_id' => $idx,
+				'rating' => $user_rating,
 			);
 			$hasil=$this->m_review->addReview($data,$idx);
 			

@@ -4,15 +4,31 @@
   <!-- Page Heading -->
   <h1 class="h3 mb-4 text-gray-800">Reviews and Ratings</h1>
 
+<style>
+ul {
+    margin: 0px;
+    padding: 10px 0px 0px 0px;
+}
+
+li.star {
+    list-style: none;
+    display: inline-block;
+    margin-right: 5px;
+    cursor: pointer;
+    color: #9E9E9E;
+	font-size: 40px;
+}
+
+li.star.selected {
+    color: #ffcc00;
+}
+</style>
+	
 </div>
-<!-- /.container-fluid -->
 
 <div data-v-5b6cdb01="" class="container">
 
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-
+	
 	<div class="card mb-4 shadow-sm">
 		<div class="card-body">
 			<form method="post" action="<?=base_url();?>Review/actReview" autocomplete="off" id="actReview" name="actReview">
@@ -21,16 +37,24 @@
 				<div data-v-60934d09="" class="profile-section">
 				<div data-v-60934d09="" class="rowform-group">
 				
+				
+				
 				<?php 
+				
 					if($login != '0'){ //login
 						if($owncomment == null){
 							echo "<h3 class='h3 mb-4 text-gray-800'>Rate this Service</h3>";
-							//echo "<div class='form-group'><input type='hidden' name='comment_name' id='comment_name' class='form-control' value= /></div>";
+							echo "<div class='panel-body'><ul class='list-inline'>";
+							//echo "<div class='panel-body'><ul class='list-inline' onMouseLeave='mouseOutRating(".$rating.")'>";
+								for($count=1; $count<=5; $count++){
+									echo "<li id='liststar_".$count."' value=".$count." class='star' onMouseOver='mouseOverRating(".$count.")' 'font-size:40px;'>&#9733;</li>";
+								}
+							echo "</ul></div>";
+							echo "<input type='hidden' id='user_rating' name='user_rating'  value='' />";
 							echo "<div class='form-group'><textarea name='comment_content' id='comment_content' class='form-control' rows='5' placeholder='Enter Comment'></textarea></div>";
 							echo "<div class='form-group'><input type='hidden' name='comment_id' id='comment_id' value='0' /><input type='submit' name='submit' id='submit' class='btn btn-info' value='Submit' /></div>";
 						} else {
 							echo "<h3 class='h3 mb-4 text-gray-800'>Your Reviews</h3>";
-							//echo "<label data-v-60934d09='' for='comment_sender_name'>".$owncomment->comment_sender_name." on ".$owncomment->date."</label><br></br>";
 							echo "<div class='panel panel-default'><div class='panel-heading'>".$owncomment->fullname." on ".$owncomment->date."</div>";
 							echo "<div class='panel-body'><ul class='list-inline'>";
 								for($count=1; $count<=5; $count++){
@@ -40,25 +64,17 @@
 										$color = 'color:#ccc;';
 									}
 									
-									echo "<li style='cursor:pointer; ".$color." font-size:16px;'>&#9733;</li>";
-									//echo "<div class='' class='rating' style='cursor:pointer; ".$color." font-size:16px;'>&#9733;</div>";
-									//echo "<li title='".$count."' id='".$comm['comment_id']."-".$count."' data-index='".$count."'  data-business_id='".$comm['comment_id']."' data-rating='".$comm['rating']."' class='rating' style='cursor:pointer; ".$color." font-size:16px;'>&#9733;</li>";
+									echo "<li id='liststar' class='list-inline-item' style='cursor:pointer; ".$color." font-size:16px;'>&#9733;</li>";
 								}
 							echo "</ul></div>";
 							echo "<div class='panel-body'>".$owncomment->comment."</div></div>";
-							//echo "<div class='form-group'><textarea name='comment_content' id='comment_content' class='form-control' rows='5' disabled='disabled'>".$owncomment->comment."</textarea></div>";
-							//echo "<div class='form-group'><input type='hidden' name='comment_id' id='comment_id' value='0' /><input type='submit' name='submit' id='submit' class='btn btn-info' value='Edit your comment' /></div>";
-						
 						}
 					}
 				?>
-					
+				
 					<br />
 					<br />
-					<span id="business_list"></span>
-					<?php
 					
-					?>
 					
 					
 					<span id="comment_message"></span>
@@ -82,23 +98,13 @@
 										$color = 'color:#ccc;';
 									}
 									
-									echo "<li style='cursor:pointer; ".$color." font-size:16px;'>&#9733;</li>";
-									//echo "<div class='' class='rating' style='cursor:pointer; ".$color." font-size:16px;'>&#9733;</div>";
-									//echo "<li title='".$count."' id='".$comm['comment_id']."-".$count."' data-index='".$count."'  data-business_id='".$comm['comment_id']."' data-rating='".$comm['rating']."' class='rating' style='cursor:pointer; ".$color." font-size:16px;'>&#9733;</li>";
+									echo "<li class='list-inline-item' style='cursor:pointer; ".$color." font-size:16px;'>&#9733;</li>";
 								}
 								echo "</ul></div>";
-								//echo $output = $color->$count;
-								//echo "<div class='' class='rating' style='cursor:pointer; ".$color[1]." font-size:16px;'>&#9733;</div>";
 								echo "<div class='panel-body'>".$comm['comment']."</div>";
-								//<div class="panel-footer" align="right"><button type="button" class="btn btn-default reply" id="'.$row["comment_id"].'">Reply</button></div>
-								
-					
-								
 								echo "</div>";
 							}
-						} 
-						
-							
+						} 	
 					?>
 					</div>
 				</div>					
@@ -106,127 +112,35 @@
 		
 			</form>
 		</div>
-	</div>		
-</div>
-
-<script>
-$(document).ready(function(){
+	</div>
 	
- load_business_data();
- 
- function load_business_data()
- {
-  $.ajax({
-   url:"fetch.php",
-   method:"POST",
-   success:function(data)
-   {
-    $('#business_list').html(data);
-   }
-  });
- }
- 
-  $(document).on('mouseenter', '.rating', function(){
-  var index = $(this).data("index");
-  var business_id = $(this).data('business_id');
-  remove_background(business_id);
-  for(var count = 1; count<=index; count++)
-  {
-   $('#'+business_id+'-'+count).css('color', '#ffcc00');
-  }
- });
- 
-  
- function remove_background(business_id)
- {
-  for(var count = 1; count <= 5; count++)
-  {
-   $('#'+business_id+'-'+count).css('color', '#ccc');
-  }
- }
- 
-  $(document).on('mouseleave', '.rating', function(){
-  var index = $(this).data("index");
-  var business_id = $(this).data('business_id');
-  var rating = $(this).data("rating");
-  remove_background(business_id);
-  //alert(rating);
-  for(var count = 1; count<=rating; count++)
-  {
-   $('#'+business_id+'-'+count).css('color', '#ffcc00');
-  }
- });
- 
-  $(document).on('click', '.rating', function(){
-  var index = $(this).data("index");
-  var business_id = $(this).data('business_id');
-  $.ajax({
-   url:"insert_rating.php",
-   method:"POST",
-   data:{index:index, business_id:business_id},
-   success:function(data)
-   {
-    if(data == 'done')
+</div>		
+
+
+<script type="text/javascript"> 
+
+function mouseOverRating(rating) {
+
+        resetRatingStars(rating)
+
+        for (var i = 1; i <= rating; i++)
+        {
+            var ratingId = "liststar_" + i;
+            document.getElementById(ratingId).style.color = "#ffcc00";
+
+        }
+		
+		document.getElementById("user_rating").value = rating;
+		
+}
+
+function resetRatingStars(rating)
     {
-     load_business_data();
-     alert("You have rate "+index +" out of 5");
+        for (var i = 1; i <= 5; i++)
+        {
+            var ratingId = "liststar_" + i;
+            document.getElementById(ratingId).style.color = "#9E9E9E";
+        }
     }
-    else
-    {
-     alert("There is some problem in System");
-    }
-   }
-  });
-  
- });
- 
- 
- 
- 
- $('#comment_form').on('submit', function(event){
-  event.preventDefault();
-  var form_data = $(this).serialize();
-  $.ajax({
-   url:"reviews.php",
-   method:"POST",
-   data:form_data,
-   dataType:"JSON",
-   success:function(data)
-   {
-    if(data.error != '')
-    {
-     $('#comment_form')[0].reset();
-     $('#comment_message').html(data.error);
-     $('#comment_id').val('0');
-     load_comment();
-    }
-   }
-  })
- });
-
- load_comment();
-
- function load_comment()
- {
-  $.ajax({
-   url:"fetch_comment.php",
-   method:"POST",
-   success:function(data)
-   {
-    $('#display_comment').html(data);
-   }
-  })
- }
-
- $(document).on('click', '.reply', function(){
-  var comment_id = $(this).attr("id");
-  $('#comment_id').val(comment_id);
-  $('#comment_name').focus();
- });
- 
-});
-
-
-
-
+	
 </script>
