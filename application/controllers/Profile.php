@@ -78,7 +78,7 @@ class Profile extends CI_Controller {
 			// memindahkan file ke temporary
 			$tmpName  = $_FILES['userfile']['tmp_name'];
 			
-			echo $identity_card;
+			//echo $identity_card;
 			$temp0 = explode(".", $identity_card);
 			$temp = $temp0[1];
 			$newfilename = round(microtime(true)) . '.' . $temp;

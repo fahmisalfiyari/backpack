@@ -160,7 +160,12 @@ class Auth extends CI_Controller {
 			exit;
 		}
 		else {
+			$token = $this->m_auth->getToken();
+			$passResetEmail = $this->m_auth->sendEmail($email, $link, $token['access_token']);
 			$forgotPasswordInsert = $this->m_auth->insertForgotPassword($email, $hash, $link, '0', $dateRegister);
+			
+			print_r ($passResetEmail);
+			
 			if($forgotPasswordInsert['email'] != NULL) {
 				header('location:login?status=forgotPassword');
 				exit;

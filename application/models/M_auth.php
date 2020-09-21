@@ -11,6 +11,47 @@ class M_auth extends CI_Model {
     $this->db = $this->load->database('default', TRUE);
   }
 
+	public function getToken(){
+		$ch = curl_init("https://apigwdev.telkom.co.id:7777/invoke/pub.apigateway.oauth2/getAccessToken");
+		$data = array(
+			'grant_type' => 'client_credentials',
+			'client_id' => '72f49b9a-7571-445b-997f-f5c3de883bf6',
+			'client_secret' => '7664bc7b-a511-4b8e-a594-837fd1dfd86e'
+			);
+		$payload = json_encode($data);
+		
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+		curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		$result = curl_exec($ch);
+		$result = json_decode($result, true);
+		curl_close($ch);
+		return $result;
+	}
+
+	public function sendEmail($email, $link, $key){
+		$ch = curl_init("https://apigwdev.telkom.co.id:7777/gateway/telkom-securecoding-training/1.0/sendEmailTraining");
+		$data = array(
+			'to' => $email,
+			'subject' => 'Reset password request',
+			'from' => 'backpack',
+			'data' => array (
+				'inputLink' => $link)
+			);
+		$payload = json_encode($data);
+		$auth = 'Authorization:Bearer '.$key;
+		
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+		curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json', $auth));
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		$result = curl_exec($ch);
+		$result = json_decode($result, true);
+
+		curl_close($ch);
+		return $result;
+	}
+	
+	
 	public function userLogin($email, $password){
 		$this->db->select('*');
 		$this->db->where([
